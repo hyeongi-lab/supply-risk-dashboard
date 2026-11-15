@@ -149,6 +149,29 @@ if not items:
 items = sorted(items, key=lambda i: (IMPORTANCE_ORDER.get(str(i.get("중요도", "")).strip(), 9),
                                      -LEVELS.index(level_of(i["item"]))))
 
+# ── 왼쪽: 감시 품목 목록 (구글 시트) ───────────────────
+with st.sidebar:
+    st.header("📋 감시 품목")
+    st.caption(f"구글 시트 '[구매팀] 감시 품목 관리' 기준 · {len(items)}개")
+    for it in items:
+        lv = level_of(it["item"])
+        meta = " · ".join(x for x in [it.get("category", ""),
+                                      f"중요도 {it['중요도']}" if str(it.get("중요도", "")).strip() in IMPORTANCE_ORDER else "",
+                                      str(it.get("주 원산지", "")).strip() if "확인" not in str(it.get("주 원산지", "")) else ""] if x)
+        st.markdown(f"{LEVEL_ICON[lv]} **{it['item']}**  \n<span style='color:gray;font-size:0.85em'>{lv}"
+                    f"{' · ' + meta if meta else ''}</span>", unsafe_allow_html=True)
+    st.divider()
+    focus = st.radio("품목별로 보기", ["전체"] + [i["item"] for i in items], index=0,
+                     help="고른 품목의 카드와 위험 이슈만 보여줍니다. (경고 배너·브리핑·가격 차트는 그대로)")
+    st.divider()
+    if ai_date_txt:
+        st.caption(f"AI 판단 기준일: {ai_date_txt}")
+    if run:
+        st.caption(f"마지막 자동 수집: {run.get('run_at', '')} " + ("✅" if run.get("ok") else "⚠️"))
+    st.caption("품목 추가·변경은 구글 시트에서 → 다음 날 아침 자동 반영")
+
+shown_items = items if focus == "전체" else [i for i in items if i["item"] == focus]
+
 # ── 1. 경고 배너 ──────────────────────────────────────
 alerts = [risks[i["item"]] for i in items if i["item"] in risks and risks[i["item"]]["level"] >= 2]
 if alerts:
@@ -202,8 +225,8 @@ def val(it: dict, field: str) -> str:
     return str(it.get(field, "")).strip() or "미입력"
 
 
-cols = st.columns(min(len(items), 3))
-for idx, it in enumerate(items):
+cols = st.columns(min(len(shown_items), 3))
+for idx, it in enumerate(shown_items):
     r = risks.get(it["item"], {})
     lv = r.get("level_name", "관심")
     with cols[idx % len(cols)].container(border=True, key=f"card_{idx}_lvl{LEVELS.index(lv)}"):
@@ -285,7 +308,8 @@ if len(news):
     level_opts = LEVELS + ["판단 전"]
     sel_level = f1.multiselect("단계", level_opts, default=level_opts, disabled=not len(ai_issues),
                                help=None if len(ai_issues) else "AI 판단 후 사용할 수 있습니다.")
-    sel_items = f2.multiselect("품목", [i["item"] for i in items], default=[i["item"] for i in items])
+    sel_items = f2.multiselect("품목", [i["item"] for i in items], default=[i["item"] for i in shown_items],
+                               key=f"issue_items_{focus}")
     types = ["수출통제", "관세·무역분쟁", "제재", "공급 차질", "공급사 변화", "가격", "기타"]
     sel_types = f3.multiselect("유형", types, default=types)
     period = f4.selectbox("기간", ["최근 7일", "최근 30일", "최근 1년", "전체"], index=1)
