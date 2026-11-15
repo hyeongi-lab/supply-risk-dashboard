@@ -64,10 +64,9 @@ def load_manual(path: Path, items, rule, news, notices, now) -> dict:
 
 def main() -> None:
     if "--test-mail" in sys.argv:
-        if alert.simulate():
-            print("MAIL_SIMULATE=1 상태라 실제로 보내지 않습니다. (.env에서 0으로 바꾸고 Gmail 값을 넣으세요)")
-            return
-        if not alert.configured():
+        # 시험 메일은 MAIL_SIMULATE와 상관없이 ALERT_TO로 딱 1통 실제 발송 (평소 자동 알림은 계속 모의 발송)
+        import os
+        if not (os.environ.get("GMAIL_ADDRESS") and os.environ.get("GMAIL_APP_PASSWORD") and alert._addrs("ALERT_TO")):
             print("[오류] .env에 GMAIL_ADDRESS, GMAIL_APP_PASSWORD, ALERT_TO를 먼저 넣어 주세요.")
             sys.exit(1)
         alert.send_mail(alert._addrs("ALERT_TO"), "[수급 경보] 시험 메일",
