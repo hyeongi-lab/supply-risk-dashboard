@@ -351,8 +351,8 @@ for idx, it in enumerate(shown_items):
         if ps:
             ch = ps.get("change_1w")
             ch_txt = "-" if ch is None else f"{ch:+.1%}"
-            st.markdown(f"**시장 가격**: {ps['price']:,.0f} {ps['unit']} · 1주 **{ch_txt}**  \n"
-                        f"<span style='color:gray;font-size:0.85em'>{ps['series']}, {ps['date']} 기준</span>",
+            st.markdown(f"**{ps['series']} 시세**: {ps['price']:,.0f} {ps['unit']} · 1주 **{ch_txt}**  \n"
+                        f"<span style='color:gray;font-size:0.85em'>KOMIS, {ps['date']} 기준</span>",
                         unsafe_allow_html=True)
             p = prices[(prices["item"] == it["item"]) & (prices["date"] >= prices["date"].max() - pd.Timedelta(days=90))]
             line_chart(p, "date", "price", height=80, mini=True)
