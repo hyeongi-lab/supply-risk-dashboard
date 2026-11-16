@@ -9,6 +9,7 @@
  4. 가격 추이 차트 (최근 12주, 첫 주=100)
  5. 위험 이슈 표
  6. 정부 수출통제 공고 + 알림 이력
+왼쪽 메뉴 '위험 판단 조건': 단계 기준·규칙·AI 판단 방식·알림 기준 설명 (숫자는 src/risk.py 값을 그대로 읽음)
 
 data/ 폴더의 items.json, news.csv, prices.csv, notices.csv, risk.json 을 읽어서 보여줍니다.
 품목 정보(원산지, 의존도, 리드타임 등)는 민감 자료가 아니므로 표시합니다. (CLAUDE.md 정보 관리 원칙)
@@ -26,7 +27,8 @@ import streamlit as st
 
 BASE = Path(__file__).parent
 sys.path.insert(0, str(BASE))
-from src.risk import issue_type  # noqa: E402
+from src.risk import (ACTIONS, ISSUE_TYPES, LONG_LEAD_MONTHS, NOTICE_DAYS, PRICE_JUMP,  # noqa: E402
+                      issue_type)
 
 DATA = BASE / "data"
 KST = timezone(timedelta(hours=9))
@@ -108,6 +110,115 @@ def badge(level: str) -> str:
             f"font-weight:600'>{LEVEL_ICON[level]} {level}</span>")
 
 
+def md_date(s: str) -> str:
+    """'2026-11-15' → '11월 15일'"""
+    try:
+        d = datetime.strptime(str(s)[:10], "%Y-%m-%d")
+        return f"{d.month}월 {d.day}일"
+    except ValueError:
+        return str(s)
+
+
+# ── 왼쪽 메뉴: 대시보드 / 위험 판단 조건 ─────────────────
+PAGES = ["📊 대시보드", "📏 위험 판단 조건"]
+with st.sidebar:
+    page = st.radio("메뉴", PAGES, index=0)
+    st.divider()
+
+
+def show_conditions() -> None:
+    """위험 판단 조건 화면. 숫자 기준은 src/risk.py 값을 그대로 보여줘서 코드와 항상 같음"""
+    st.title("📏 위험 판단 조건")
+    st.caption("매일 아침 07시 자동 실행 때 품목마다 아래 조건으로 위험 단계를 정합니다. "
+               "최종 단계 = AI 판단과 규칙 판단 중 높은 단계")
+
+    # 1. 단계 정의
+    st.subheader("1. 위험 단계 4가지")
+    meaning = {
+        "관심": "아래 조건에 해당하지 않음. 관련 뉴스가 평소 수준",
+        "주의": f"관련 기사가 평소보다 크게 늘어남, 또는 시장 가격이 1주에 {PRICE_JUMP:.0%} 이상 상승",
+        "경계": f"주요 생산국의 수출 규제 검토·발표 보도, 무역 보복 조치, 최근 {NOTICE_DAYS}일 안에 당사 품목 관련 정부 공고",
+        "심각": "당사 품목에 대한 수출통제가 확정·시행됨",
+    }
+    notify_txt = {"관심": "없음", "주의": "대시보드 강조", "경계": "담당자 메일 + 빨간 경고 배너",
+                  "심각": "담당자 + 팀 전체 메일 + 빨간 경고 배너"}
+    rows = "".join(f"<tr><td style='white-space:nowrap'>{badge(lv)}</td><td>{meaning[lv]}</td>"
+                   f"<td>{ACTIONS[lv]}</td><td>{notify_txt[lv]}</td></tr>" for lv in LEVELS)
+    st.markdown("<table style='width:100%'><tr><th>단계</th><th>기준</th><th>권장 조치</th><th>알림</th></tr>"
+                f"{rows}</table>", unsafe_allow_html=True)
+
+    # 2. 규칙 판단
+    st.subheader("2. 규칙 판단 (자동, 숫자 기준)")
+    st.markdown(
+        f"정해진 숫자로 기계적으로 판단합니다. 놓치지 않기 위한 **최소 안전장치**예요.\n\n"
+        f"| 순서 | 조건 | 결과 |\n| --- | --- | --- |\n"
+        f"| ① 가격 | 시장 가격(텅스텐 APT, 알루미늄 LME)이 **1주 {PRICE_JUMP:.0%} 이상 상승** | 🟡 주의 |\n"
+        f"| ② 정부 공고 | **최근 {NOTICE_DAYS}일** 안에 미국 BIS·일본 METI·중국 상무부 공고의 제목·요약에 "
+        f"당사 품목 키워드가 있음 | 🟠 경계 |\n"
+        f"| ③ 리드타임 | 시트의 리드타임이 **{LONG_LEAD_MONTHS}개월 이상**이고 ①·② 중 하나라도 해당 | 한 단계 상향 (최대 🔴 심각) |\n"
+        f"| ④ 그 외 | 위 조건에 해당 없음 | 🟢 관심 |"
+    )
+    st.caption("규칙의 한계: 가격이 서서히 오르거나 기사로만 나온 위험은 잡지 못합니다. 그래서 AI 판단을 함께 씁니다.")
+
+    # 3. AI 판단
+    st.subheader("3. AI 판단 (상황 종합)")
+    st.markdown(
+        "**위험도 = 외부 위험 × 당사 노출도**\n\n"
+        "| 구분 | 보는 것 | 출처 |\n| --- | --- | --- |\n"
+        "| 외부 위험 | 수출통제·관세·제재·공급 차질·공급사 변화 기사 | Google News (영문·중문·한글) |\n"
+        "| 외부 위험 | 정부 수출통제 공고 | 미국 BIS, 일본 METI, 중국 상무부 |\n"
+        "| 외부 위험 | 시장 가격 추이 (1주·4주 변동) | KOMIS |\n"
+        "| 당사 노출도 | 주 원산지 의존도, 리드타임, 대체 공급선 유무, 중요도 | 구글 시트 '감시 품목 관리' |\n\n"
+        "**판단 원칙**\n"
+        "- 같은 사건이라도 의존도가 높고, 리드타임이 길고, 대체 공급선이 약하면 한 단계 높게 봅니다.\n"
+        "- 이미 시행된 오래된 조치보다 **최근 30일 안의 새 변화**를 중심으로 봅니다.\n"
+        "- 기사·공고·가격에 없는 사실은 만들지 않습니다. 시트가 비어 있으면 보수적으로 가정하고 그렇게 밝힙니다.\n"
+        "- 품목마다 판단 이유, 권장 조치, 예상 리드타임을 함께 씁니다."
+    )
+    if any(r.get("ai_date") for r in risks.values()):
+        st.info("지금은 Claude API 연결 전이라, 대화로 작성한 수동 판단 파일(`data/judgments/`)의 가장 최근 날짜를 씁니다. "
+                "Claude API 키를 연결하면 매일 아침 자동으로 판단합니다.")
+
+    # 4. 오늘 적용 결과
+    st.subheader("4. 최종 단계 = AI 판단과 규칙 판단 중 높은 단계")
+    if risks:
+        tbl = pd.DataFrame([{
+            "품목": r["item"],
+            "AI 판단": f"{LEVEL_ICON.get(r.get('ai_level_name', ''), '')} {r.get('ai_level_name', '-')}"
+                      + (f" ({md_date(r['ai_date'])} 기준)" if r.get("ai_date") else ""),
+            "규칙 판단 (오늘)": f"{LEVEL_ICON.get(r.get('rule_level_name', ''), '')} {r.get('rule_level_name', '-')}",
+            "최종 단계": f"{LEVEL_ICON.get(r['level_name'], '')} {r['level_name']}"
+                       + (" · 규칙으로 상향" if r.get("raised_by_rule") else ""),
+        } for r in risks.values()])
+        st.dataframe(tbl, hide_index=True, width="stretch")
+        st.caption(f"규칙 판단 시각: {next(iter(risks.values())).get('assessed_at', '')} (한국 시간)")
+    else:
+        st.caption("아직 판단 결과가 없습니다. `analyze.py`를 실행해 주세요.")
+
+    # 5. 알림
+    st.subheader("5. 알림 조건")
+    st.markdown(
+        "- 🟠 **경계** 이상이 되면 담당자에게 메일, 🔴 **심각**이면 팀 전체에도 메일\n"
+        "- **단계가 올라갈 때만** 보냅니다. 같은 단계가 계속되면 다시 보내지 않습니다 (예: 경계 → 경계는 안 보냄, 경계 → 심각은 보냄).\n"
+        "- 메일과 함께 대시보드 맨 위에 빨간 경고 배너가 뜹니다.\n"
+        "- 알림 이력에는 메일 주소를 남기지 않습니다 ('담당자' / '팀 전체'로만 기록)."
+    )
+
+    # 6. 기사 유형
+    st.subheader("6. 기사 유형 분류")
+    st.markdown("기사 제목의 단어로 아래 순서대로 분류합니다. 어디에도 해당하지 않으면 '기타'.\n\n"
+                + " → ".join(f"**{name}**" for name, _ in ISSUE_TYPES))
+
+    st.divider()
+    st.caption(f"기준 숫자(가격 {PRICE_JUMP:.0%}, 공고 {NOTICE_DAYS}일, 리드타임 {LONG_LEAD_MONTHS}개월)는 "
+               "`src/risk.py`, AI 판단 기준은 `src/ai_judge.py`에 있습니다. 바꾸고 싶으면 Claude Code에 요청하세요.")
+
+
+if page == PAGES[1]:
+    show_conditions()
+    st.stop()
+
+
 # 경계 이상 카드 테두리 강조 (카드 key 끝이 _lvl2, _lvl3)
 st.markdown(
     f"""<style>
@@ -127,15 +238,6 @@ if run:
                ("정상" if run.get("ok") else f"⚠️ 일부 실패({', '.join(run.get('failed_parts', []))})"))
 st.caption(f"마지막 수집: {last} (한국 시간){run_txt} · 뉴스: Google News · 가격: KOMIS · "
            f"공고: 미국 BIS, 일본 METI, 중국 상무부 · 품목 정보: 구매팀 감시 품목 시트")
-
-
-def md_date(s: str) -> str:
-    """'2026-11-15' → '11월 15일'"""
-    try:
-        d = datetime.strptime(str(s)[:10], "%Y-%m-%d")
-        return f"{d.month}월 {d.day}일"
-    except ValueError:
-        return str(s)
 
 
 ai_dates = sorted({r.get("ai_date") for r in risks.values() if r.get("ai_date")})
