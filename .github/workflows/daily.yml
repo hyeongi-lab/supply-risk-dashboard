@@ -49,7 +49,7 @@ jobs:
           ALERT_TO: ${{ secrets.ALERT_TO }}
           ALERT_TO_TEAM: ${{ secrets.ALERT_TO_TEAM }}
           MAIL_SIMULATE: ${{ secrets.MAIL_SIMULATE || '1' }}
-          DASHBOARD_URL: ${{ vars.DASHBOARD_URL }}
+          DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://supply-risk-hyeongi.streamlit.app/' }}
         run: python analyze.py
 
       - name: 결과 저장 (data/ 커밋)

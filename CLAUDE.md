@@ -72,13 +72,15 @@
 - 4단계 주의: GitHub Actions(미국 서버)에서 KOMIS·중국 사이트가 막힐 수 있음 → 배포 때 확인
 
 ## 2단계 구현 내용 (2026-11-15)
-- **수집은 사용자가 요청할 때만 (2026-11-15 사용자 요청)**: 평소에는 `collect.py`를 실행하지 않고 data/에 있는 자료로만 작업한다.
-  주의: `collect.py`는 마지막에 risk.json을 규칙 기반으로 덮어쓰므로, 수집 뒤에는 그날 판단 파일을 `analyze.py --manual`로 다시 적용한다.
+- **로컬 수집은 사용자가 요청할 때만 (2026-11-15 사용자 요청)**: 내 PC에서는 `collect.py`를 실행하지 않고 data/에 있는 자료로만 작업한다.
+  (매일 수집은 GitHub Actions가 함. `collect.py`는 이제 risk.json을 건드리지 않음 — 판단은 `analyze.py`만)
 - 실행 파일: `analyze.py` (수집 없이 판단만) → 규칙 판단 → Claude API 판단 → '경계' 이상 메일. `--test-mail`로 시험 메일
 - AI `src/ai_judge.py`: 모델 `claude-opus-5-5`, effort medium, 구조화 출력(JSON schema), 거절 시 서버 측 fallback(`fallbacks: "default"`).
   하루 1회 요청 1번으로 전 품목 판단 (입력 약 4천 자, 하루 수십 원 수준). 결과: 품목별 단계·이유·조치·예상 리드타임, 기사별 단계·이유, 브리핑 3줄
   → `data/risk.json`(method "AI"), `data/briefing.json`, `data/issues_ai.csv`. API 키가 없거나 실패하면 규칙 기반 결과 사용
-- 메일 `src/alert.py`: Gmail SMTP(앱 비밀번호). 경계 → ALERT_TO, 심각 → + ALERT_TO_TEAM. 같은 품목·단계는 하루 1번.
+- 메일 `src/alert.py`: Gmail SMTP(앱 비밀번호). 경계 → ALERT_TO, 심각 → + ALERT_TO_TEAM.
+  **단계가 올라갈 때만 발송 (2026-11-16 사용자 결정)** — 같은 단계 유지 중엔 다시 안 보냄. 지난 단계는 `data/alert_state.json`.
+  `--test-mail`은 MAIL_SIMULATE와 상관없이 1통 실제 발송(Gmail 값 필요. 사용자가 시험 메일은 생략하기로 함)
   `data/alerts.csv`에는 받는 사람 주소를 남기지 않음(웹 공개) — '담당자'/'팀 전체'로만 기록
 - 비밀 값: `.env`(gitignore됨, 양식은 `.env.example`) — ANTHROPIC_API_KEY, GMAIL_ADDRESS, GMAIL_APP_PASSWORD, ALERT_TO, ALERT_TO_TEAM, (선택) DASHBOARD_URL
 - **현재 운영 상태 (2026-11-15 사용자 결정)**:
@@ -110,25 +112,29 @@
 4. GitHub Actions 자동 실행 + Streamlit Cloud 배포
 5. 2024~2025년 텅스텐 사례로 경보 재현 테스트
 
-## 진행 상황 (2026-11-15 기준)
+## 진행 상황 (2026-11-16 기준)
 | 단계 | 상태 |
 | --- | --- |
-| 1단계 | ✅ 완료. 구글 시트(링크 공유 CSV) 연결, 뉴스 316건(커넥터 6건 포함), 대시보드 목표 화면 6개 구역 |
-| 3단계 | ✅ 완료. KOMIS 가격(텅스텐 APT 698일치, 알루미늄 LME 727일치), 정부 공고 105건(관련 4건), 규칙 기반 단계 |
+| 1단계 | ✅ 완료. 구글 시트(링크 공유 CSV) 연결, 뉴스 수집, 대시보드 목표 화면 6개 구역 + 왼쪽 감시 품목 목록·품목별 보기 |
+| 3단계 | ✅ 완료. KOMIS 가격(텅스텐 APT, 알루미늄 LME), 정부 공고(미국·일본·중국), 규칙 기반 단계 |
 | 2단계 | 🟡 코드 완료, 외부 연결 전. Claude API 키 없음 → 대화 중 수동 판단으로 운영. Gmail 미연결 → 모의 발송 |
-| 4단계 | ⬜ 다음 할 일 |
-| 5단계 | ⬜ 4단계 후 |
-- 로컬 환경: 정식 Python 3.13(`py -3.13`)으로 만든 `.venv` 사용 (`python` 명령은 MSYS2 파이썬이라 쓰지 않음). Git 2.56 설치됨, 저장소 `git init`만 됨(커밋 없음, git 사용자 이름·이메일 미설정)
-- 실행: 수집 `collect.py`(요청 시만), 판단 `analyze.py [--manual 파일]`, 화면 `streamlit run app.py` (bat: run_collect.bat, run_dashboard.bat)
+| 4단계 | ✅ 완료 (2026-11-15~16). GitHub Private 저장소 + Actions 매일 자동 실행 + Streamlit Cloud 공개 배포 |
+| 5단계 | ⬜ 다음 할 일: 텅스텐 2025.10~현재 경보 재현 테스트 (별도 세션 시작했으나 Trust repository 대기) |
+- 로컬 환경: 정식 Python 3.13(`py -3.13`)으로 만든 `.venv` 사용 (`python` 명령은 MSYS2 파이썬이라 쓰지 않음). Git 2.56.
+  git 작성자 이름 `hyeongi`(저장소 단위 설정). push는 Git Credential Manager에 로그인 저장됨 → Claude 셸에서 `GIT_TERMINAL_PROMPT=0 git push` 가능
+- 실행: 수집 `collect.py`(로컬은 요청 시만), 판단 `analyze.py [--manual 파일]`, 화면 `streamlit run app.py --server.headless true`
+  (bat: run_collect.bat, run_dashboard.bat. 터미널에서 headless 없이 실행하면 첫 실행 때 이메일 입력 화면에서 멈춤)
 
-## 다음 할 일: 4단계 배포 (화면 기준으로 하나씩 안내)
-1. 올리기 전 점검: `git status`로 올라갈 파일 확인. `.env`, `service_account*.json`, 루트의 `*.json`이 빠졌는지 확인.
-   `docs/`·`watchlist.csv`는 사용자가 .gitignore에서 뺐으므로 올라감(저장소는 반드시 Private). `.claude/`는 제외 목록에 추가할 것
-2. 사용자: GitHub 가입 → Private 저장소 생성. git 작성자 이메일은 GitHub noreply 주소 권장. 첫 push 때 GitHub 로그인 창은 사용자가 직접 로그인
-3. GitHub Actions(`.github/workflows/daily.yml`): 매일 07:00 KST = cron `0 22 * * *`(UTC) → `collect.py` → `analyze.py` → data/ 변경분 커밋·푸시
-   - API 키가 없으면 analyze.py는 규칙 기반으로 동작(수동 판단은 로컬에서만)
-   - 미국 서버에서 KOMIS·중국 상무부 정보망이 막힐 수 있음 → 첫 실행 로그로 확인, 막히면 대안 검토
-4. GitHub Secrets: ANTHROPIC_API_KEY(나중에), GMAIL_ADDRESS, GMAIL_APP_PASSWORD, ALERT_TO, ALERT_TO_TEAM, MAIL_SIMULATE. 구글 관련 Secret은 필요 없음
-5. Streamlit Community Cloud(share.streamlit.io, GitHub 로그인) → 저장소의 app.py 배포 → 웹 주소 확보 → 회사 PC 크롬에서 접속 확인
-   - 웹은 주소를 아는 누구나 볼 수 있음(품목 정보 포함, 원칙상 허용). 필요하면 간단한 접속 비밀번호 검토
-6. 배포 주소를 `.env`/Secrets의 DASHBOARD_URL에 넣어 알림 메일에 링크 포함
+## 배포·운영 (2026-11-16 기준)
+- **대시보드 주소: https://supply-risk-hyeongi.streamlit.app/** (Streamlit Community Cloud, 로그인·비밀번호 없이 공개 — 사용자 결정)
+  → GitHub main이 바뀌면 1~3분 안에 자동 재배포. 알림 메일 링크(DASHBOARD_URL)도 이 주소 (workflow 기본값 + 로컬 .env)
+- **GitHub 저장소: https://github.com/hyeongi-lab/supply-risk-dashboard** (Private). Secrets: `ALERT_TO`, `MAIL_SIMULATE`=1.
+  나중에 `ANTHROPIC_API_KEY`를 Secrets에 넣으면 다음 실행부터 자동으로 Claude API 판단 (Gmail은 GMAIL_ADDRESS·GMAIL_APP_PASSWORD 추가 + MAIL_SIMULATE=0)
+- **매일 자동 실행** `.github/workflows/daily.yml`: cron `0 22 * * *`(07:00 KST, 실제로는 30분쯤 늦게 시작하기도 함) + 수동 실행 버튼(Run workflow).
+  `collect.py` → `analyze.py` → data/ 커밋(github-actions[bot]) → `data/last_run.json`에 실패가 있으면 실행을 '실패'로 표시 → GitHub이 실패 메일 발송.
+  첫 실행(2026-11-15)과 11/16 07:33 실행 모두 정상: 미국 서버에서도 KOMIS·중국 상무부 정보망 차단 없음
+- **AI 판단 (API 연결 전)**: `analyze.py`는 API 키가 없으면 `data/judgments/`의 가장 최근 `YYYY-MM-DD.json`을 자동 적용 → 화면에 'AI 판단 기준일' 표시.
+  **화면 단계 = AI 판단과 오늘 규칙 판단 중 높은 단계** (2026-11-16 사용자 결정. 규칙이 더 높으면 '규칙으로 상향' 표시)
+- **수동 판단 올리는 방법**: 사용자가 대화에서 "오늘 판단해서 올려줘" → (1) `git pull`로 최신 data 받기 → (2) Claude가 `data/judgments/오늘날짜.json` 작성
+  → (3) `analyze.py`로 로컬 적용·확인 → (4) 커밋·push → 웹에 반영. push 전에 항상 pull(아침 자동 커밋과 충돌 방지)
+- 내 PC ↔ GitHub은 자동 동기화가 아님: 작업 전 pull, 작업 후 push
