@@ -1,32 +1,22 @@
 {
-  "run_at": "2026-11-17 07:42",
-  "ok": false,
-  "failed_parts": [
-    "뉴스"
-  ],
-  "problems": [
-    "[텅스텐 분말] (en) tungsten powder: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22tungsten%20powder%22%20%28%22export%20control%22%20OR%20%22export%20ban%22%20OR%20%22export%20restriction%22%20OR%20tariff%20OR%20sanction%20OR%20embargo%20OR%20shortage%20OR%20%22supply%20disruption%22%20OR%20%22supply%20chain%22%20OR%20%22lead%20time%22%20OR%20discontinued%20OR%20%22price%20increase%22%29&hl=en-US&gl=US&ceid=US%3Aen",
-    "[텅스텐 분말] (en) tungsten APT: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22tungsten%20APT%22%20%28%22export%20control%22%20OR%20%22export%20ban%22%20OR%20%22export%20restriction%22%20OR%20tariff%20OR%20sanction%20OR%20embargo%20OR%20shortage%20OR%20%22supply%20disruption%22%20OR%20%22supply%20chain%22%20OR%20%22lead%20time%22%20OR%20discontinued%20OR%20%22price%20increase%22%29&hl=en-US&gl=US&ceid=US%3Aen",
-    "[텅스텐 분말] (en) tungsten export control: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22tungsten%20export%20control%22%20%28%22export%20control%22%20OR%20%22export%20ban%22%20OR%20%22export%20restriction%22%20OR%20tariff%20OR%20sanction%20OR%20embargo%20OR%20shortage%20OR%20%22supply%20disruption%22%20OR%20%22supply%20chain%22%20OR%20%22lead%20time%22%20OR%20discontinued%20OR%20%22price%20increase%22%29&hl=en-US&gl=US&ceid=US%3Aen",
-    "[텅스텐 분말] (ko) 텅스텐: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%ED%85%85%EC%8A%A4%ED%85%90%20%28%EC%88%98%EC%B6%9C%ED%86%B5%EC%A0%9C%20OR%20%22%EC%88%98%EC%B6%9C%20%EA%B7%9C%EC%A0%9C%22%20OR%20%EC%88%98%EC%B6%9C%EA%B8%88%EC%A7%80%20OR%20%EA%B4%80%EC%84%B8%20OR%20%EC%A0%9C%EC%9E%AC%20OR%20%EC%88%98%EA%B8%89%20OR%20%22%EA%B3%B5%EA%B8%89%20%EC%B0%A8%EC%A7%88%22%20OR%20%ED%92%88%EA%B7%80%20OR%20%EB%82%A9%EA%B8%B0%20OR%20%EB%8B%A8%EC%A2%85%29&hl=ko&gl=KR&ceid=KR%3Ako",
-    "[알루미늄] (ko) 알루미늄 관세: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22%EC%95%8C%EB%A3%A8%EB%AF%B8%EB%8A%84%20%EA%B4%80%EC%84%B8%22%20%28%EC%88%98%EC%B6%9C%ED%86%B5%EC%A0%9C%20OR%20%22%EC%88%98%EC%B6%9C%20%EA%B7%9C%EC%A0%9C%22%20OR%20%EC%88%98%EC%B6%9C%EA%B8%88%EC%A7%80%20OR%20%EA%B4%80%EC%84%B8%20OR%20%EC%A0%9C%EC%9E%AC%20OR%20%EC%88%98%EA%B8%89%20OR%20%22%EA%B3%B5%EA%B8%89%20%EC%B0%A8%EC%A7%88%22%20OR%20%ED%92%88%EA%B7%80%20OR%20%EB%82%A9%EA%B8%B0%20OR%20%EB%8B%A8%EC%A2%85%29&hl=ko&gl=KR&ceid=KR%3Ako",
-    "[Cr 커넥터] (en) MIL-DTL-83513: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=MIL-DTL-83513&hl=en-US&gl=US&ceid=US%3Aen",
-    "[Cr 커넥터] (ko) 마이크로D 커넥터: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9CD%20%EC%BB%A4%EB%84%A5%ED%84%B0%22%20%28%EC%88%98%EC%B6%9C%ED%86%B5%EC%A0%9C%20OR%20%22%EC%88%98%EC%B6%9C%20%EA%B7%9C%EC%A0%9C%22%20OR%20%EC%88%98%EC%B6%9C%EA%B8%88%EC%A7%80%20OR%20%EA%B4%80%EC%84%B8%20OR%20%EC%A0%9C%EC%9E%AC%20OR%20%EC%88%98%EA%B8%89%20OR%20%22%EA%B3%B5%EA%B8%89%20%EC%B0%A8%EC%A7%88%22%20OR%20%ED%92%88%EA%B7%80%20OR%20%EB%82%A9%EA%B8%B0%20OR%20%EB%8B%A8%EC%A2%85%29&hl=ko&gl=KR&ceid=KR%3Ako"
-  ],
+  "run_at": "2026-11-18 07:49",
+  "ok": true,
+  "failed_parts": [],
+  "problems": [],
   "summary": {
     "뉴스": [
-      "[Cr 커넥터] (en) MIL-DTL-83513: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=MIL-DTL-83513&hl=en-US&gl=US&ceid=US%3Aen",
+      "[Cr 커넥터] (en) MIL-DTL-83513 (단독 검색): 10건",
       "[Cr 커넥터] (en) defense connector: 2건",
       "[Cr 커넥터] (en) aerospace connector: 0건",
       "[Cr 커넥터] (en) connector lead time: 0건",
-      "[Cr 커넥터] (ko) 마이크로D 커넥터: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9CD%20%EC%BB%A4%EB%84%A5%ED%84%B0%22%20%28%EC%88%98%EC%B6%9C%ED%86%B5%EC%A0%9C%20OR%20%22%EC%88%98%EC%B6%9C%20%EA%B7%9C%EC%A0%9C%22%20OR%20%EC%88%98%EC%B6%9C%EA%B8%88%EC%A7%80%20OR%20%EA%B4%80%EC%84%B8%20OR%20%EC%A0%9C%EC%9E%AC%20OR%20%EC%88%98%EA%B8%89%20OR%20%22%EA%B3%B5%EA%B8%89%20%EC%B0%A8%EC%A7%88%22%20OR%20%ED%92%88%EA%B7%80%20OR%20%EB%82%A9%EA%B8%B0%20OR%20%EB%8B%A8%EC%A2%85%29&hl=ko&gl=KR&ceid=KR%3Ako",
-      "→ 새로 추가 9건 (전체 337건) · 제목으로 걸러냄: 품목 키워드 없음 45건, 시장 보고서·광고 4건"
+      "[Cr 커넥터] (ko) 마이크로D 커넥터: 0건",
+      "→ 새로 추가 21건 (전체 358건) · 제목으로 걸러냄: 품목 키워드 없음 70건, 시장 보고서·광고 5건"
     ],
     "가격": [
-      "[텅스텐 분말] 텅스텐 APT 699일치 (최근 2026-11-13: 83,184.52 USD/mt)",
-      "[알루미늄] 알루미늄 LME 728일치 (최근 2026-11-13: 3,150.50 USD/ton)",
+      "[텅스텐 분말] 텅스텐 APT 700일치 (최근 2026-11-16: 83,251.89 USD/mt)",
+      "[알루미늄] 알루미늄 LME 729일치 (최근 2026-11-16: 3,332.00 USD/ton)",
       "[Cr 커넥터] 가격 지표 없음 → 건너뜀",
-      "→ 저장 1427행"
+      "→ 저장 1429행"
     ],
     "공고": [
       "→ 전체 105건 (당사 품목 관련 4건)"
