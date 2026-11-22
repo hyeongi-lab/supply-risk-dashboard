@@ -16,7 +16,7 @@
     },
     "lead_time_months": 4.0,
     "method": "AI (Claude 대화 판단·수동 (2026-11-15 3차: 부품 제조사명 단독 검색 반영, API 연결 전))",
-    "assessed_at": "2026-11-22 07:35",
+    "assessed_at": "2026-11-23 07:43",
     "rule_level": 0,
     "rule_level_name": "관심",
     "rule_reasons": [
@@ -47,7 +47,7 @@
     },
     "lead_time_months": null,
     "method": "AI (Claude 대화 판단·수동 (2026-11-15 3차: 부품 제조사명 단독 검색 반영, API 연결 전))",
-    "assessed_at": "2026-11-22 07:35",
+    "assessed_at": "2026-11-23 07:43",
     "rule_level": 0,
     "rule_level_name": "관심",
     "rule_reasons": [
@@ -71,7 +71,7 @@
     "price": {},
     "lead_time_months": null,
     "method": "AI (Claude 대화 판단·수동 (2026-11-15 3차: 부품 제조사명 단독 검색 반영, API 연결 전))",
-    "assessed_at": "2026-11-22 07:35",
+    "assessed_at": "2026-11-23 07:43",
     "rule_level": 0,
     "rule_level_name": "관심",
     "rule_reasons": [
