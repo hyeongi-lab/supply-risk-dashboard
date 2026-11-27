@@ -1,26 +1,22 @@
 {
-  "run_at": "2026-11-27 07:51",
-  "ok": false,
-  "failed_parts": [
-    "뉴스"
-  ],
-  "problems": [
-    "[텅스텐 분말] (en) ammonium paratungstate: 실패 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%22ammonium%20paratungstate%22%20%28%22export%20control%22%20OR%20%22export%20ban%22%20OR%20%22export%20restriction%22%20OR%20tariff%20OR%20sanction%20OR%20embargo%20OR%20shortage%20OR%20%22supply%20disruption%22%20OR%20%22supply%20chain%22%20OR%20%22lead%20time%22%20OR%20discontinued%20OR%20%22price%20increase%22%29&hl=en-US&gl=US&ceid=US%3Aen"
-  ],
+  "run_at": "2026-11-28 07:53",
+  "ok": true,
+  "failed_parts": [],
+  "problems": [],
   "summary": {
     "뉴스": [
-      "[Cr 커넥터] (en) MIL-DTL-83513 (단독 검색): 10건",
-      "[Cr 커넥터] (en) defense connector: 1건",
+      "[Cr 커넥터] (en) MIL-DTL-83513 (단독 검색): 9건",
+      "[Cr 커넥터] (en) defense connector: 2건",
       "[Cr 커넥터] (en) aerospace connector: 0건",
       "[Cr 커넥터] (en) connector lead time: 0건",
       "[Cr 커넥터] (ko) 마이크로D 커넥터: 0건",
-      "→ 새로 추가 100건 (전체 951건) · 제목으로 걸러냄: 품목 키워드 없음 234건, 시장 보고서·광고 3건"
+      "→ 새로 추가 28건 (전체 979건) · 제목으로 걸러냄: 품목 키워드 없음 198건, 시장 보고서·광고 2건"
     ],
     "가격": [
-      "[텅스텐 분말] 텅스텐 APT 707일치 (최근 2026-11-25: 84,635.06 USD/mt)",
-      "[알루미늄] 알루미늄 LME 736일치 (최근 2026-11-25: 2,849.00 USD/ton)",
+      "[텅스텐 분말] 텅스텐 APT 708일치 (최근 2026-11-26: 84,831.93 USD/mt)",
+      "[알루미늄] 알루미늄 LME 737일치 (최근 2026-11-26: 2,980.00 USD/ton)",
       "[Cr 커넥터] 가격 지표 없음 → 건너뜀",
-      "→ 저장 1443행"
+      "→ 저장 1445행"
     ],
     "공고": [
       "→ 전체 109건 (당사 품목 관련 4건)"

@@ -9,14 +9,14 @@
     "action": "현재 재고 일수를 확인하고, 리드타임을 고려해 1분기 소요분 선발주와 알몬티(상동) 등 대체 공급선 견적을 이번 주 안에 받으세요.",
     "price": {
       "series": "텅스텐 APT",
-      "date": "2026-11-25",
-      "price": 84635.06,
+      "date": "2026-11-26",
+      "price": 84831.93,
       "unit": "USD/mt",
-      "change_1w": 0.0167
+      "change_1w": 0.019
     },
     "lead_time_months": 4.0,
     "method": "AI (Claude 대화 판단·수동 (2026-11-15 3차: 부품 제조사명 단독 검색 반영, API 연결 전))",
-    "assessed_at": "2026-11-27 07:51",
+    "assessed_at": "2026-11-28 07:53",
     "rule_level": 0,
     "rule_level_name": "관심",
     "rule_reasons": [
@@ -40,14 +40,14 @@
     "action": "주 공급사에 다음 분기 납기와 지역 프리미엄(할증) 변동을 확인하고, 시트에 원산지·의존도·리드타임을 채워 주세요.",
     "price": {
       "series": "알루미늄 LME",
-      "date": "2026-11-25",
-      "price": 2849.0,
+      "date": "2026-11-26",
+      "price": 2980.0,
       "unit": "USD/ton",
-      "change_1w": -0.0795
+      "change_1w": -0.0403
     },
     "lead_time_months": null,
     "method": "AI (Claude 대화 판단·수동 (2026-11-15 3차: 부품 제조사명 단독 검색 반영, API 연결 전))",
-    "assessed_at": "2026-11-27 07:51",
+    "assessed_at": "2026-11-28 07:53",
     "rule_level": 0,
     "rule_level_name": "관심",
     "rule_reasons": [
@@ -71,7 +71,7 @@
     "price": {},
     "lead_time_months": null,
     "method": "AI (Claude 대화 판단·수동 (2026-11-15 3차: 부품 제조사명 단독 검색 반영, API 연결 전))",
-    "assessed_at": "2026-11-27 07:51",
+    "assessed_at": "2026-11-28 07:53",
     "rule_level": 0,
     "rule_level_name": "관심",
     "rule_reasons": [
